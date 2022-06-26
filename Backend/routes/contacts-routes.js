@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get('/', contactsController.searchContact)
 
-router.post('/create', [check('name').not().isEmpty()], contactsController.createContact)
+router.post('/create', [check('name').not().isEmpty(), check('number').isNumeric().isLength({ min: 8, max: 8 })], contactsController.createContact)
 
 router.put('/:id', contactsController.updateContact)
 
