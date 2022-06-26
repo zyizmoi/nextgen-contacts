@@ -4,23 +4,21 @@ const { validationResult } = require('express-validator')
 const HttpError = require('../models/http-error')
 const Contact = require('../models/contact')
 
-let DUMMY_CONTACTS = [
-  {
-    id: '23482734792',
-    name: 'John Smith',
-    number: '92834728',
-    email: 'jsmith@blabla.com',
-  },
-  {
-    id: '23482734795',
-    name: 'Jane Doe',
-    number: '32476283',
-    email: 'jdoe@blabla.com',
-  },
-]
+const allContacts = async (req, res, next) => {
+  let allContactList
+  try {
+    allContactList = await Contact.find()
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not find a contact', 500)
+    return next(error)
+  }
 
-const allContacts = (req, res, next) => {
-  res.json(DUMMY_CONTACTS)
+  console.log('GET request for contacts')
+
+  if (!allContactList || allContactList.length === 0) {
+    return res.json({})
+  }
+  res.json({ contacts: allContactList.map((contact) => contact.toObject({ getters: true })) })
 }
 
 const searchContact = async (req, res, next) => {
@@ -37,7 +35,6 @@ const searchContact = async (req, res, next) => {
     })
   } catch (err) {
     const error = new HttpError('Something went wrong, could not find a contact', 500)
-    console.log(err)
     return next(error)
   }
 
@@ -76,7 +73,7 @@ const createContact = async (req, res, next) => {
   res.status(201).json({ contact: newContact })
 }
 
-const updateContact = (req, res, next) => {
+const updateContact = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     throw new HttpError('Invalid inputs passed, please check your data.', 422)
@@ -85,30 +82,46 @@ const updateContact = (req, res, next) => {
   const { name, number, email } = req.body
   const id = req.params.id
 
-  if (!DUMMY_CONTACTS.find((contact) => contact.id === id)) {
-    throw new HttpError('Could not find a contact with that id.', 404)
+  let updatedContact
+  try {
+    updatedContact = await Contact.findById(id)
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not update contact', 500)
+    return next(error)
   }
-
-  const updatedContact = { ...DUMMY_CONTACTS.find((contact) => contact.id === id) }
-  const contactIndex = DUMMY_CONTACTS.findIndex((contact) => contact.id === id)
 
   updatedContact.name = name ? name : updatedContact.name
   updatedContact.number = number ? number : updatedContact.number
   updatedContact.email = email ? email : updatedContact.email
 
-  DUMMY_CONTACTS[contactIndex] = updatedContact
-
-  res.status(200).json({ contact: updatedContact })
-}
-
-const deleteContact = (req, res, next) => {
-  const id = req.params.id
-
-  if (!DUMMY_CONTACTS.find((contact) => contact.id === id)) {
-    throw new HttpError('Could not find a contact with that id.', 404)
+  try {
+    await updatedContact.save()
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not update contact', 500)
+    return next(error)
   }
 
-  DUMMY_CONTACTS = DUMMY_CONTACTS.filter((contact) => contact.id !== id)
+  res.status(200).json({ contact: updatedContact.toObject({ getters: true }) })
+}
+
+const deleteContact = async (req, res, next) => {
+  const id = req.params.id
+
+  let contactToDelete
+  try {
+    contactToDelete = await Contact.findById(id)
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not delete contact', 500)
+    return next(error)
+  }
+
+  try {
+    await contactToDelete.remove()
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not delete contact', 500)
+    return next(error)
+  }
+
   res.status(200).json({ message: 'Deleted contact' })
 }
 
