@@ -1,4 +1,4 @@
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 const { validationResult } = require('express-validator')
 
 const HttpError = require('../models/http-error')
@@ -54,6 +54,12 @@ const searchContact = (req, res, next) => {
 }
 
 const createContact = (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    console.log(errors)
+    throw new HttpError('Please check your inputs', 422)
+  }
+
   console.log(req.body)
   const { name, number, email } = req.body
   const newContact = {
@@ -83,9 +89,10 @@ const updateContact = (req, res, next) => {
 
   const updatedContact = { ...DUMMY_CONTACTS.find((contact) => contact.id === id) }
   const contactIndex = DUMMY_CONTACTS.findIndex((contact) => contact.id === id)
-  updatedContact.name = name
-  updatedContact.number = number
-  updatedContact.email = email
+
+  updatedContact.name = name ? name : updatedContact.name
+  updatedContact.number = number ? number : updatedContact.number
+  updatedContact.email = email ? email : updatedContact.email
 
   DUMMY_CONTACTS[contactIndex] = updatedContact
 
