@@ -2,6 +2,7 @@ const { v4: uuid } = require('uuid')
 const { validationResult } = require('express-validator')
 
 const HttpError = require('../models/http-error')
+const Contact = require('../models/contact')
 
 let DUMMY_CONTACTS = [
   {
@@ -22,54 +23,55 @@ const allContacts = (req, res, next) => {
   res.json(DUMMY_CONTACTS)
 }
 
-const searchContact = (req, res, next) => {
+const searchContact = async (req, res, next) => {
   const filter = req.query.search
 
-  if (!filter) {
-    console.log('GET request for contacts')
-    res.json(DUMMY_CONTACTS)
+  if (!filter || filter.length === 0) {
+    return next(new HttpError('No search term', 400))
   }
 
-  const filteredContacts = DUMMY_CONTACTS.filter((contact) => {
-    let isValid = false
-
-    for (property in contact) {
-      isValid = contact[property].toLowerCase().search(filter.toLowerCase()) >= 0
-
-      if (isValid === true) {
-        return isValid
-      }
-    }
-
-    return isValid
-  })
-
-  if (filteredContacts.length == 0) {
-    const error = new HttpError('No name or number', 404)
+  let contacts
+  try {
+    contacts = await Contact.find({
+      $or: [{ name: { $regex: filter, $options: 'i' } }, { number: { $regex: filter, $options: 'i' } }, { email: { $regex: filter, $options: 'i' } }],
+    })
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not find a contact', 500)
+    console.log(err)
     return next(error)
   }
 
+  if (!contacts || contacts.length === 0) {
+    return next(new HttpError('Could not find a matching contact', 404))
+  }
+
   console.log('GET request for contacts')
-  res.json(filteredContacts)
+  res.json({ contacts: contacts.map((contact) => contact.toObject({ getters: true })) })
 }
 
-const createContact = (req, res, next) => {
+const createContact = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    console.log(errors)
-    throw new HttpError('Please check your inputs', 422)
+    return next(new HttpError('Please check your inputs', 422))
   }
 
   console.log(req.body)
-  const { name, number, email } = req.body
-  const newContact = {
-    id: uuid(),
+  const { name, number, email, creator } = req.body
+  const strNumber = number.toString()
+  console.log(typeof strNumber)
+  const newContact = new Contact({
     name,
-    number,
+    strNumber,
     email,
-  }
+    creator,
+  })
 
-  DUMMY_CONTACTS.push(newContact)
+  try {
+    await newContact.save()
+  } catch (err) {
+    const error = new HttpError('Failed to create a contact, please try again', 500)
+    return next(error)
+  }
 
   res.status(201).json({ contact: newContact })
 }
