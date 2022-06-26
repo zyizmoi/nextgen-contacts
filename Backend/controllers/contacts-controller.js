@@ -20,6 +20,25 @@ const allContacts = async (req, res, next) => {
   res.json({ contacts: allContactList.map((contact) => contact.toObject({ getters: true })) })
 }
 
+const findContactById = async (req, res, next) => {
+  const id = req.params.id
+
+  let contact
+  try {
+    contact = await Contact.findById(id)
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not update contact', 500)
+    return next(error)
+  }
+
+  if (!contact) {
+    const error = new HttpError('Could not find contact for given ID', 404)
+    return next(error)
+  }
+
+  res.json({ contact: contact.toObject({ getters: true }) })
+}
+
 const searchContact = async (req, res, next) => {
   const filter = req.query.search
 
@@ -54,7 +73,7 @@ const createContact = async (req, res, next) => {
   const strNumber = number.toString()
   const newContact = new Contact({
     name,
-    strNumber,
+    number: strNumber,
     email,
     creator,
   })
@@ -153,3 +172,4 @@ exports.createContact = createContact
 exports.updateContact = updateContact
 exports.deleteContact = deleteContact
 exports.allContacts = allContacts
+exports.findContactById = findContactById

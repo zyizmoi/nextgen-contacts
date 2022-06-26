@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500&display=swap');
+
+.contact-table {
+  border-radius: 1%;
+  min-width: 500;
+  width: 75%;
+  height: 40rem;
+  margin: 20px auto;
+  padding: 15px 10px;
+  background: #fff;
+}

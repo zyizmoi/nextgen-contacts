@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react'
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
+
+import UserContacts from './contacts/pages/UserContacts'
 
 function App() {
-  return <h1>Let's start!</h1>;
+  return (
+    <Router>
+      <Route path='/'>
+        <UserContacts />
+      </Route>
+    </Router>
+  )
 }
 
-export default App;
+export default App
