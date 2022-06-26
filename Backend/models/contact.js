@@ -6,7 +6,7 @@ const contactSchema = new Schema({
   name: { type: String, required: true },
   number: { type: String },
   email: { type: String },
-  creator: { type: String, required: true },
+  creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
 })
 
 module.exports = mongoose.model('Contact', contactSchema)

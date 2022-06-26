@@ -1,8 +1,9 @@
-const { v4: uuid } = require('uuid')
 const { validationResult } = require('express-validator')
 
 const HttpError = require('../models/http-error')
 const Contact = require('../models/contact')
+const User = require('../models/user')
+const { default: mongoose } = require('mongoose')
 
 const allContacts = async (req, res, next) => {
   let allContactList
@@ -52,7 +53,6 @@ const createContact = async (req, res, next) => {
     return next(new HttpError('Please check your inputs', 422))
   }
 
-  console.log(req.body)
   const { name, number, email, creator } = req.body
   const strNumber = number.toString()
   console.log(typeof strNumber)
@@ -63,10 +63,27 @@ const createContact = async (req, res, next) => {
     creator,
   })
 
+  let user
   try {
-    await newContact.save()
+    user = await User.findById(creator)
   } catch (err) {
-    const error = new HttpError('Failed to create a contact, please try again', 500)
+    const error = new HttpError('Creating contact failed, please try again', 500)
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user with given ID', 404)
+    return next(error)
+  }
+
+  try {
+    const sess = await mongoose.startSession()
+    sess.startTransaction()
+    await newContact.save({ session: sess })
+    user.contacts.push(newContact)
+    await user.save({ session: sess })
+    await sess.commitTransaction()
+  } catch (err) {
+    const error = new HttpError('Creating contact failed, please try again', 500)
     return next(error)
   }
 
@@ -76,7 +93,7 @@ const createContact = async (req, res, next) => {
 const updateContact = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    throw new HttpError('Invalid inputs passed, please check your data.', 422)
+    return next(new HttpError('Invalid inputs passed, please check your data.', 422))
   }
 
   const { name, number, email } = req.body
@@ -109,14 +126,24 @@ const deleteContact = async (req, res, next) => {
 
   let contactToDelete
   try {
-    contactToDelete = await Contact.findById(id)
+    contactToDelete = await (await Contact.findById(id)).populate('creator')
   } catch (err) {
     const error = new HttpError('Something went wrong, could not delete contact', 500)
     return next(error)
   }
 
+  if (!contactToDelete) {
+    const error = new HttpError('could not find a place for given ID', 404)
+    return next(error)
+  }
+
   try {
-    await contactToDelete.remove()
+    const sess = await mongoose.startSession()
+    sess.startTransaction()
+    await contactToDelete.remove({ session: sess })
+    contactToDelete.creator.contacts.pull(contactToDelete)
+    await contactToDelete.creator.save({ session: sess })
+    await sess.commitTransaction()
   } catch (err) {
     const error = new HttpError('Something went wrong, could not delete contact', 500)
     return next(error)
