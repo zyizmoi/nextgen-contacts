@@ -1,5 +1,7 @@
 .place-item {
-  margin: 1rem 0;
+  margin: 10em auto;
+  width: 50%;
+  list-style: none;
 }
 
 .place-item__content {
@@ -50,7 +52,7 @@
 
 .map-container {
   height: 15rem;
-  width: 100%;
+  width: 50%;
 }
 
 @media (min-width: 768px) {

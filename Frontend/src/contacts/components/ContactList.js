@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 import { styled } from '@mui/material/styles'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import Card from '../../shared/components/UIElements/Card'
 import ContactItem from './ContactItem'
@@ -34,12 +34,10 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }))
 
-const navigate = useNavigate()
-const handleOnRowClick = useCallback(() => {
-  navigate('/')
-})
-
 const ContactList = (props) => {
+  const history = useHistory()
+  const handleOnRowClick = (props) => history.push(`/contact/${props.id}`)
+
   if (props.items.length === 0) {
     return (
       <div className='place-list center'>
@@ -61,7 +59,7 @@ const ContactList = (props) => {
 
   return (
     <div className='contact-table'>
-      <StyledDataGrid rows={rows} columns={columns} />
+      <StyledDataGrid rows={rows} columns={columns} onRowClick={handleOnRowClick} />
     </div>
   )
 

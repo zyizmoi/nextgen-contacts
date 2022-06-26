@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { useParams, useRouteMatch } from 'react-router-dom'
 
 import Card from '../../shared/components/UIElements/Card'
 import Button from '../../shared/components/FormElements/Button'
@@ -6,39 +7,33 @@ import Button from '../../shared/components/FormElements/Button'
 // import Map from '../../shared/components/UIElements/Map';
 // import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
+import { useHttpClient } from '../../shared/hooks/http-hook'
 // import { AuthContext } from '../../shared/context/auth-context'
-// import { useHttpClient } from '../../shared/hooks/http-hook'
 import './ContactItem.css'
 
-const ContactItem = (props) => {
-  // const { isLoading, error, sendRequest, clearError } = useHttpClient()
-  // const auth = useContext(AuthContext)
-  // const [showMap, setShowMap] = useState(false)
-  // const [showConfirmModal, setShowConfirmModal] = useState(false)
+const ContactItem = () => {
+  const [contact, setContact] = useState()
+  const { isLoading, error, sendRequest, clearError } = useHttpClient()
 
-  // const openMapHandler = () => setShowMap(true);
+  const id = useRouteMatch().params.id
 
-  // const closeMapHandler = () => setShowMap(false);
+  useEffect(() => {
+    console.log('trying')
+    const fetchContact = async () => {
+      try {
+        const responseData = await sendRequest(`http://localhost:5000/contact/${id}`)
+        console.log(['res?', responseData])
+        // console.log(responseData.contact)
+        setContact(responseData.contact)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    console.log('here?')
+    fetchContact()
+  }, [sendRequest, id])
 
-  // const showDeleteWarningHandler = () => {
-  //   setShowConfirmModal(true);
-  // };
-
-  // const cancelDeleteHandler = () => {
-  //   setShowConfirmModal(false);
-  // };
-
-  // const confirmDeleteHandler = async () => {
-  //   setShowConfirmModal(false);
-  //   try {
-  //     await sendRequest(
-  //       `http://localhost:5000/api/places/${props.id}`,
-  //       'DELETE'
-  //     );
-  //     props.onDelete(props.id);
-  //   } catch (err) {}
-  // };
-
+  console.log(contact)
   return (
     <>
       {/* <ErrorModal error={error} onClear={clearError} /> */}
@@ -74,22 +69,26 @@ const ContactItem = (props) => {
       </Modal> */}
       <li className='place-item'>
         <Card className='place-item__content'>
-          {/* {isLoading && <LoadingSpinner asOverlay />} */}
-          <div className='place-item__image'>
-            <img src={props.image} alt={props.title} />
-          </div>
-          <div className='place-item__info'>
-            <h2>Name: {props.name}</h2>
-            <h3>Number: {props.number}</h3>
-            <h3>Email: {props.email}</h3>
-          </div>
-          <div className='place-item__actions'>
-            {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
-            <Button to={`/places/${props.id}`}>EDIT</Button>
-            <Button danger>DELETE</Button>
+          {isLoading && <LoadingSpinner asOverlay />}
+          {/* <div className='place-item__image'>
+            <img src={contact.image} alt={contact.title} />
+          </div> */}
+          {!isLoading && contact && (
+            <>
+              <div className='place-item__info'>
+                <h2>Name: {contact.name}</h2>
+                <h3>Number: {contact.number}</h3>
+                <h3>Email: {contact.email}</h3>
+              </div>
+              <div className='place-item__actions'>
+                {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
+                <Button to={`/places/${contact.id}`}>EDIT</Button>
+                <Button danger>DELETE</Button>
+              </div>
+            </>
+          )}
 
-            {/* {auth.userId === props.creatorId && <Button danger>DELETE</Button>} */}
-          </div>
+          {/* {auth.userId === props.creatorId && <Button danger>DELETE</Button>} */}
         </Card>
       </li>
     </>
