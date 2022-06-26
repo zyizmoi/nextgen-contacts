@@ -14,8 +14,6 @@ const allContacts = async (req, res, next) => {
     return next(error)
   }
 
-  console.log('GET request for contacts')
-
   if (!allContactList || allContactList.length === 0) {
     return res.json({})
   }
@@ -43,7 +41,6 @@ const searchContact = async (req, res, next) => {
     return next(new HttpError('Could not find a matching contact', 404))
   }
 
-  console.log('GET request for contacts')
   res.json({ contacts: contacts.map((contact) => contact.toObject({ getters: true })) })
 }
 
@@ -55,7 +52,6 @@ const createContact = async (req, res, next) => {
 
   const { name, number, email, creator } = req.body
   const strNumber = number.toString()
-  console.log(typeof strNumber)
   const newContact = new Contact({
     name,
     strNumber,
