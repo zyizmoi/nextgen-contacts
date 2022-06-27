@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { Stack } from '@mui/material'
+import { Container } from '@mui/material'
 
 import ContactTable from '../components/ContactTable'
 import ErrorModal from '../../shared/components/UIElements/ErrorModal'
@@ -45,9 +45,9 @@ const PopulatedContacts = (props) => {
   return (
     <>
       {isLoading && (
-        <div className='center'>
+        <Container align='center'>
           <LoadingSpinner />
-        </div>
+        </Container>
       )}
       {!isLoading && !loadedContacts && <ErrorCard message='No results for this query!' />}
       {!isLoading && loadedContacts && <ContactTable items={loadedContacts} />}

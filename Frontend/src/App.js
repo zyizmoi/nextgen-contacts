@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 
 import ContactItem from './contacts/components/ContactItem'
@@ -7,27 +7,44 @@ import ContactForm from './contacts/components/ContactForm'
 import Auth from './users/pages/Auth'
 import NavBar from './shared/components/NavBar'
 import { AuthContext } from './shared/context/auth-context'
+import LoadingSpinner from './shared/components/UIElements/LoadingSpinner'
 
 import './App.css'
 
 function App() {
-  const [token, setToken] = useState(true)
+  const [token, setToken] = useState(false)
   const [userId, setUserId] = useState(false)
+
+  const [loggingin, setLoggingin] = useState(true)
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('userData'))
+    if (storedData && storedData.token) {
+      login(storedData.userId, storedData.token)
+      setLoggingin(false)
+    }
+  }, [])
 
   const login = useCallback((uid, token) => {
     setToken(token)
+    localStorage.setItem('userData', JSON.stringify({ userId: uid, token: token }))
+    console.log('set')
     setUserId(uid)
+    setLoggingin(false)
   }, [])
 
   const logout = useCallback(() => {
     setToken(null)
     setUserId(null)
+    localStorage.removeItem('userData')
   }, [])
 
   let routes
 
   if (token) {
-    routes = (
+    routes = loggingin ? (
+      <LoadingSpinner asOverlay />
+    ) : (
       <Router>
         <NavBar path='/' />
         <Route exact path='/'>
