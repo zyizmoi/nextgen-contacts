@@ -3,11 +3,14 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 
 import ContactItem from './contacts/components/ContactItem'
 import ContactsPage from './contacts/pages/ContactsPage'
+import ContactForm from './contacts/components/ContactForm'
 import NavBar from './shared/components/NavBar'
+
+import './App.css'
 
 function App() {
   return (
-    <>
+    <div className='main-window'>
       <Router>
         <NavBar path='/' />
         <Route exact path='/'>
@@ -19,8 +22,11 @@ function App() {
         <Route exact path='/contact/:id'>
           <ContactItem />
         </Route>
+        <Route path='/contact/update/:id'>
+          <ContactForm />
+        </Route>
       </Router>
-    </>
+    </div>
   )
 }
 

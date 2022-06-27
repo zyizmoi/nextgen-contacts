@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Stack } from '@mui/material'
 
-import ContactList from '../components/ContactList'
+import ContactTable from '../components/ContactTable'
 import ErrorModal from '../../shared/components/UIElements/ErrorModal'
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
 import { useHttpClient } from '../../shared/hooks/http-hook'
@@ -41,7 +41,7 @@ const PopulatedContacts = (props) => {
         </div>
       )}
       {!isLoading && !loadedContacts && <ErrorCard message='No results for this query!' />}
-      {!isLoading && loadedContacts && <ContactList items={loadedContacts} />}
+      {!isLoading && loadedContacts && <ContactTable items={loadedContacts} />}
     </>
   )
 }

@@ -33,7 +33,7 @@ import './ContactTable.css'
 //   },
 // }))
 
-const ContactList = (props) => {
+const ContactTable = (props) => {
   const history = useHistory()
   const handleOnRowClick = (props) => history.push(`/contact/${props.id}`)
 
@@ -71,4 +71,4 @@ const ContactList = (props) => {
   //   )
 }
 
-export default ContactList
+export default ContactTable

@@ -9,6 +9,12 @@ import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search'
+import AdbIcon from '@mui/icons-material/Adb'
+
+import { Button, Menu, MenuItem, Container, Tooltip, Avatar } from '@mui/material'
+
+const pages = ['All Contacts', 'New Contact']
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -53,8 +59,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 export default function NavBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null)
+  const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [input, setInput] = useState()
   const history = useHistory()
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget)
+  }
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget)
+  }
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null)
+  }
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null)
+  }
+
+  const handleAllContacts = (e) => {
+    history.push('/')
+    handleCloseNavMenu()
+  }
 
   const onChange = (e) => {
     setInput(e.target.value)
@@ -72,13 +100,169 @@ export default function NavBar() {
   return (
     <Box sx={{ flexGrow: 1, marginBottom: '2rem' }}>
       <AppBar position='static' sx={{ backgroundColor: 'gray', boxShadow: 'none' }}>
-        <Toolbar>
-          <IconButton size='large' edge='start' color='inherit' aria-label='open drawer' sx={{ mr: 2 }}>
+        <Container maxWidth='xl'>
+          <Toolbar disableGutters>
+            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <Typography
+              variant='h6'
+              noWrap
+              component='a'
+              href='/'
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              NXTContacts
+            </Typography>
+
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+              <IconButton size='large' aria-label='account of current user' aria-controls='menu-appbar' aria-haspopup='true' onClick={handleOpenNavMenu} color='inherit'>
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id='menu-appbar'
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                <MenuItem key='All Contacts' onClick={handleAllContacts}>
+                  <Typography textAlign='center'>All Contacts</Typography>
+                </MenuItem>
+                <MenuItem key='New Contact' onClick={handleCloseNavMenu}>
+                  <Typography textAlign='center'>New Contact</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+            <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+            <Typography
+              variant='h5'
+              noWrap
+              component='a'
+              href=''
+              sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'none' },
+                flexGrow: 1,
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              NXTContacts
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              <Button key={'All Contacts'} onClick={handleAllContacts} sx={{ my: 2, color: 'white', display: 'block' }}>
+                All Contacts
+              </Button>
+              <Button key={'New Contact'} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
+                New Contact
+              </Button>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, padding: '0 1em' }}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <form onSubmit={onSubmit}>
+                  <StyledInputBase placeholder='Search…' inputProps={{ 'aria-label': 'search' }} onChange={onChange} />
+                </form>
+              </Search>
+            </Box>
+
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title='Open settings'>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt='ZY' src='/static/images/avatar/2.jpg' />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id='menu-appbar'
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign='center'>{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </Box>
+  )
+}
+
+{
+  /* <Toolbar>
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+              <IconButton size='large' aria-label='account of current user' aria-controls='menu-appbar' aria-haspopup='true' onClick={handleOpenNavMenu} color='inherit'>
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id='menu-appbar'
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign='center'>{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+            {/* <IconButton size='large' edge='start' color='inherit' aria-label='open drawer' sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' noWrap component='div' sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>
             NextGenContacts
           </Typography>
+
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -86,9 +270,6 @@ export default function NavBar() {
             <form onSubmit={onSubmit}>
               <StyledInputBase placeholder='Search…' inputProps={{ 'aria-label': 'search' }} onChange={onChange} />
             </form>
-          </Search>
-        </Toolbar>
-      </AppBar>
-    </Box>
-  )
+          </Search> */
 }
+//</Toolbar> */}
