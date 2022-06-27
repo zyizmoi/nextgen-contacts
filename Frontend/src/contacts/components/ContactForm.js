@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, Link } from 'react-router-dom'
 
 import { Box, Card, Container, Button, Typography, TextField, Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
@@ -87,26 +87,27 @@ const ContactForm = () => {
   }
 
   return (
-    <Container maxWidth='md'>
+    <Grid item container spacing={4} direction='column' align='center' justifyContent='center' maxWidth='50%' margin='auto'>
       {isLoading && <LoadingSpinner asOverlay />}
       {((!isLoading && contact) || !id) && (
-        <>
-          <Box mb={2}>
+        <Card>
+          <Grid item mt={2} mb={2} align='center'>
             <Typography variant='h5' component='div'>
               {id ? 'Edit Contact' : 'New Contact'}
             </Typography>
-          </Box>
+          </Grid>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Box mb={2}>
-              <TextField label='Name' fullWidth {...register('name', { required: 'Required' })} error={!!errors?.name} helperText={errors?.name ? errors.name.message : null} />
-            </Box>
-            <Box mb={2}>
-              <TextField label='Number' fullWidth {...register('number')} />
-            </Box>
-            <Box mb={2}>
+            <Grid mb={2} xs={6} flexGrow={2} align='center'>
+              <TextField fullWidth label='Name' {...register('name', { required: 'Required' })} error={!!errors?.name} helperText={errors?.name ? errors.name.message : null} />
+            </Grid>
+            <Grid mb={2} xs={6} align='center'>
+              <TextField fullWidth label='Number' {...register('number')} />
+            </Grid>
+            <Grid mb={2} xs={6} align='center'>
               <TextField
-                label='Email'
                 fullWidth
+                flexGrow={2}
+                label='Email'
                 {...register('email', {
                   pattern: {
                     value: /^\S+@\S+\.\S+$/,
@@ -116,14 +117,19 @@ const ContactForm = () => {
                 error={!!errors?.email}
                 helperText={errors?.email ? errors.email.message : null}
               />
-            </Box>
-            <Button type='submit' variant='contained' color='primary'>
-              {id ? 'Update Contact' : 'Add Contact'}
-            </Button>
+            </Grid>
+            <Grid item mb={2} align='center'>
+              <Button type='submit' variant='contained' color='primary' sx={{ marginRight: '5px' }}>
+                {id ? 'Update Contact' : 'Add Contact'}
+              </Button>
+              <Button variant='contained' color='error' component={Link} to='/'>
+                Cancel
+              </Button>
+            </Grid>
           </form>
-        </>
+        </Card>
       )}
-    </Container>
+    </Grid>
   )
 }
 

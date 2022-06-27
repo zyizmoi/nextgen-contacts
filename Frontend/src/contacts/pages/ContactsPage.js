@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useRouteMatch } from 'react-router-dom'
 import { Box, Typography, Grid } from '@mui/material'
 
+import BasicModal from '../../shared/components/UIElements/BasicModal'
 import PopulatedContacts from './PopulatedContacts'
 
 const ContactsPage = (props) => {
