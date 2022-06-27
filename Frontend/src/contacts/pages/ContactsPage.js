@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouteMatch } from 'react-router-dom'
-import { Stack, Typography, Grid } from '@mui/material'
+import { Box, Typography, Grid } from '@mui/material'
 
 import PopulatedContacts from './PopulatedContacts'
 
@@ -10,7 +10,9 @@ const ContactsPage = (props) => {
   return (
     <>
       <Grid container spacing={0} direction='column' alignItems='center' justifyContent='center'>
-        <Typography variant='h6'>{header}</Typography>
+        <Box sx={{ width: '75%' }}>
+          <Typography variant='h6'>{header}</Typography>
+        </Box>
       </Grid>
       <PopulatedContacts query={query} />
     </>

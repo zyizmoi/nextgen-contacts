@@ -58,6 +58,7 @@ const searchContact = async (req, res, next) => {
 
   if (!contacts || contacts.length === 0) {
     return next(new HttpError('Could not find a matching contact', 404))
+    // return res.json({ contacts: {} })
   }
 
   res.json({ contacts: contacts.map((contact) => contact.toObject({ getters: true })) })

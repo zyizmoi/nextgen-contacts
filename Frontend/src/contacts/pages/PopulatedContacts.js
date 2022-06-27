@@ -26,6 +26,7 @@ const PopulatedContacts = (props) => {
       } else {
         try {
           const responseData = await sendRequest(`http://localhost:5000/contact/?search=${query}`)
+          console.log(responseData)
           setloadedContacts(responseData.contacts)
         } catch (err) {}
       }

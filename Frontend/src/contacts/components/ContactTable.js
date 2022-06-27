@@ -35,7 +35,7 @@ import './ContactTable.css'
 
 const ContactTable = (props) => {
   const history = useHistory()
-  const handleOnRowClick = (props) => history.push(`/contact/${props.id}`)
+  const handleOnRowClick = (props) => history.push(`/contact/find/${props.id}`)
 
   if (props.items.length === 0) {
     return (

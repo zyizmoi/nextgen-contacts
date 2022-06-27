@@ -84,6 +84,11 @@ export default function NavBar() {
     handleCloseNavMenu()
   }
 
+  const handleNewContact = (e) => {
+    history.push('/contact/create')
+    handleCloseNavMenu()
+  }
+
   const onChange = (e) => {
     setInput(e.target.value)
   }
@@ -173,7 +178,7 @@ export default function NavBar() {
               <Button key={'All Contacts'} onClick={handleAllContacts} sx={{ my: 2, color: 'white', display: 'block' }}>
                 All Contacts
               </Button>
-              <Button key={'New Contact'} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
+              <Button key={'New Contact'} onClick={handleNewContact} sx={{ my: 2, color: 'white', display: 'block' }}>
                 New Contact
               </Button>
             </Box>

@@ -1,23 +1,75 @@
 import React from 'react'
-import { Card, CardHeader, CardContent, Button, Typography, TextField, Grid } from '@mui/material'
+import { useHistory } from 'react-router-dom'
+
+import { Box, Card, Container, Button, Typography, TextField, Grid } from '@mui/material'
+import { useForm } from 'react-hook-form'
+import { useHttpClient } from '../../shared/hooks/http-hook'
 
 const ContactForm = () => {
-  const onSubmit = (e) => {
-    e.preventDefault()
-    alert('Submit')
+  const { isLoading, error, sendRequest, clearError } = useHttpClient()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
+  const onSubmit = async (data) => {
+    addNewContact(data)
+  }
+  const history = useHistory()
+
+  const addNewContact = async (data) => {
+    try {
+      await sendRequest(
+        'http://localhost:5000/contact/create',
+        'POST',
+        JSON.stringify({
+          name: data.name,
+          number: data.number,
+          email: data.email,
+          creator: '62b84b79f754efcabdf3327d',
+        }),
+        { 'Content-Type': 'application/json' }
+      )
+      history.push('/')
+    } catch (err) {
+      alert('An error occured, please try again')
+    }
   }
 
   return (
-    <Grid container spacing={0} direction='column' alignItems='center' justifyContent='center'>
-      <Card sx={{ minWidth: '40%', padding: '5%', justifyContent: 'center', display: 'flex' }}>
-        <form onSubmit={onSubmit}>
-          <TextField label='Name' />
-          <TextField label='Number' />
-          <TextField label='Email' type='password' />
-          <Button type='submit'>Update Contact</Button>
-        </form>
-      </Card>
-    </Grid>
+    <Container maxWidth='md'>
+      <Box mb={2}>
+        <Typography variant='h5' component='div'>
+          New Contact
+        </Typography>
+      </Box>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box mb={2}>
+          <TextField label='Name' fullWidth {...register('name', { required: 'Required' })} error={!!errors?.name} helperText={errors?.name ? errors.name.message : null} />
+        </Box>
+        <Box mb={2}>
+          <TextField label='Number' fullWidth {...register('number')} />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            label='Email'
+            fullWidth
+            {...register('email', {
+              pattern: {
+                value: /^\S+@\S+\.\S+$/,
+                message: 'Invalid email address',
+              },
+            })}
+            error={!!errors?.email}
+            helperText={errors?.email ? errors.email.message : null}
+          />
+        </Box>
+        <Button type='submit' variant='contained' color='primary'>
+          Add Contact
+        </Button>
+      </form>
+    </Container>
   )
 }
 

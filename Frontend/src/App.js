@@ -19,10 +19,13 @@ function App() {
         <Route exact path='/contact/search/:query'>
           <ContactsPage header='Search Results' />
         </Route>
-        <Route exact path='/contact/:id'>
+        <Route exact path='/contact/find/:id'>
           <ContactItem />
         </Route>
-        <Route path='/contact/update/:id'>
+        <Route exact path='/contact/update/:id'>
+          <ContactForm />
+        </Route>
+        <Route exact path='/contact/create'>
           <ContactForm />
         </Route>
       </Router>
