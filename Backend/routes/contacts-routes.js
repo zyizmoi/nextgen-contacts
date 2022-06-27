@@ -11,8 +11,8 @@ router.post('/create', [check('name').not().isEmpty(), check('number').isNumeric
 
 router.get('/:id', contactsController.findContactById)
 
-router.put('/:id', contactsController.updateContact)
+router.put('/:id/update', contactsController.updateContact)
 
-router.delete('/:id', contactsController.deleteContact)
+router.delete('/:id/delete', contactsController.deleteContact)
 
 module.exports = router

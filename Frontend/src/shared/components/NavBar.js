@@ -104,8 +104,8 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1, marginBottom: '2rem' }}>
-      <AppBar position='static' sx={{ backgroundColor: 'gray', boxShadow: 'none' }}>
-        <Container maxWidth='xl'>
+      <AppBar position='static' sx={{ backgroundColor: '#a3a3a3', boxShadow: 'none' }}>
+        <Container width='100%'>
           <Toolbar disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             <Typography

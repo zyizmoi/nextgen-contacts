@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { useParams, useRouteMatch, Link } from 'react-router-dom'
+import { useHistory, useRouteMatch, Link } from 'react-router-dom'
 
 import { Card, CardHeader, CardContent, Button, Typography } from '@mui/material'
 
@@ -17,8 +17,9 @@ const ContactItem = () => {
 
   const id = useRouteMatch().params.id
 
+  const history = useHistory()
+
   useEffect(() => {
-    console.log('trying')
     const fetchContact = async () => {
       try {
         const responseData = await sendRequest(`http://localhost:5000/contact/${id}`)
@@ -32,6 +33,19 @@ const ContactItem = () => {
     console.log('here?')
     fetchContact()
   }, [sendRequest, id])
+
+  const onDelete = async () => {
+    if (window.confirm('Delete contact?')) {
+      await deleteContact()
+      history.push('/')
+    }
+  }
+
+  const deleteContact = async () => {
+    try {
+      await sendRequest(`http://localhost:5000/contact/${id}/delete`, 'DELETE')
+    } catch (err) {}
+  }
 
   console.log(contact)
   return (
@@ -67,7 +81,7 @@ const ContactItem = () => {
       >
         <p>Do you want to proceed and delete this place? Please note that it can't be undone thereafter.</p>
       </Modal> */}
-      <Card sx={{ minWidth: '40%', margin: '10% 0%' }}>
+      <Card sx={{ minWidth: '40%', margin: '5% 0%' }}>
         <CardContent>
           {isLoading && <LoadingSpinner asOverlay />}
           {/* <div className='place-item__image'>
@@ -85,13 +99,15 @@ const ContactItem = () => {
               </Typography>
               <div>
                 {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
-                <Button component={Link} to='/'>
+                <Button variant='text' component={Link} to='/'>
                   BACK
                 </Button>
-                <Button component={Link} to={`/contact/update/${contact.id}`}>
+                <Button variant='text' component={Link} to={{ pathname: `/contact/update/${contact.id}`, state: { id: id } }}>
                   EDIT
                 </Button>
-                <Button danger>DELETE</Button>
+                <Button variant='text' onClick={onDelete}>
+                  DELETE
+                </Button>
               </div>
             </>
           )}
