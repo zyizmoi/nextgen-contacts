@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useParams, useRouteMatch } from 'react-router-dom'
 
-import Card from '../../shared/components/UIElements/Card'
-import Button from '../../shared/components/FormElements/Button'
+import { Card, CardHeader, CardContent, Button, Typography } from '@mui/material'
+
 // import Modal from '../../shared/components/UIElements/Modal';
 // import Map from '../../shared/components/UIElements/Map';
 // import ErrorModal from '../../shared/components/UIElements/ErrorModal';
@@ -35,7 +35,7 @@ const ContactItem = () => {
 
   console.log(contact)
   return (
-    <>
+    <div style={{ display: 'flex', justifyContent: 'center', minWidth: '40%' }}>
       {/* <ErrorModal error={error} onClear={clearError} /> */}
       {/* <Modal
         show={showMap}
@@ -67,21 +67,25 @@ const ContactItem = () => {
       >
         <p>Do you want to proceed and delete this place? Please note that it can't be undone thereafter.</p>
       </Modal> */}
-      <li className='place-item'>
-        <Card className='place-item__content'>
+      <Card sx={{ minWidth: '40%', margin: '10% 0%' }}>
+        <CardContent>
           {isLoading && <LoadingSpinner asOverlay />}
           {/* <div className='place-item__image'>
             <img src={contact.image} alt={contact.title} />
           </div> */}
           {!isLoading && contact && (
             <>
-              <div className='place-item__info'>
-                <h2>Name: {contact.name}</h2>
-                <h3>Number: {contact.number}</h3>
-                <h3>Email: {contact.email}</h3>
-              </div>
-              <div className='place-item__actions'>
+              <Typography gutterBottom variant='h2' component='div'>
+                {contact.name}
+              </Typography>
+              <Typography variant='body1' component='div'>
+                <p>Name: {contact.name}</p>
+                <p>Number: {contact.number}</p>
+                <p>Email: {contact.email}</p>
+              </Typography>
+              <div>
                 {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
+                <Button href={'/'}>BACK</Button>
                 <Button to={`/places/${contact.id}`}>EDIT</Button>
                 <Button danger>DELETE</Button>
               </div>
@@ -89,9 +93,9 @@ const ContactItem = () => {
           )}
 
           {/* {auth.userId === props.creatorId && <Button danger>DELETE</Button>} */}
-        </Card>
-      </li>
-    </>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
