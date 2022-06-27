@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { useParams, useRouteMatch } from 'react-router-dom'
+import { useParams, useRouteMatch, Link } from 'react-router-dom'
 
 import { Card, CardHeader, CardContent, Button, Typography } from '@mui/material'
 
@@ -85,8 +85,12 @@ const ContactItem = () => {
               </Typography>
               <div>
                 {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
-                <Button href={'/'}>BACK</Button>
-                <Button to={`/places/${contact.id}`}>EDIT</Button>
+                <Button component={Link} to='/'>
+                  BACK
+                </Button>
+                <Button component={Link} to={`/contact/update/${contact.id}`}>
+                  EDIT
+                </Button>
                 <Button danger>DELETE</Button>
               </div>
             </>
