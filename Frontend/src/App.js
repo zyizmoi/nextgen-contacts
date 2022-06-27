@@ -4,13 +4,30 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import ContactItem from './contacts/components/ContactItem'
 import ContactsPage from './contacts/pages/ContactsPage'
 import ContactForm from './contacts/components/ContactForm'
+import Auth from './users/pages/Auth'
 import NavBar from './shared/components/NavBar'
+import { AuthContext } from './shared/context/auth-context'
 
 import './App.css'
 
 function App() {
-  return (
-    <div className='main-window'>
+  const [token, setToken] = useState(true)
+  const [userId, setUserId] = useState(false)
+
+  const login = useCallback((uid, token) => {
+    setToken(token)
+    setUserId(uid)
+  }, [])
+
+  const logout = useCallback(() => {
+    setToken(null)
+    setUserId(null)
+  }, [])
+
+  let routes
+
+  if (token) {
+    routes = (
       <Router>
         <NavBar path='/' />
         <Route exact path='/'>
@@ -29,7 +46,29 @@ function App() {
           <ContactForm />
         </Route>
       </Router>
-    </div>
+    )
+  } else {
+    routes = (
+      <Router>
+        <Route path='/'>
+          <Auth />
+        </Route>
+      </Router>
+    )
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}
+    >
+      <div className='main-window'>{routes}</div>
+    </AuthContext.Provider>
   )
 }
 

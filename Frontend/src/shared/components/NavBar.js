@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { useHistory, Link } from 'react-router-dom'
 import { styled, alpha } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -12,6 +12,8 @@ import SearchIcon from '@mui/icons-material/Search'
 import AdbIcon from '@mui/icons-material/Adb'
 
 import { Button, Menu, MenuItem, Container, Tooltip, Avatar } from '@mui/material'
+
+import { AuthContext } from '../../shared/context/auth-context'
 
 const pages = ['All Contacts', 'New Contact']
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
@@ -63,6 +65,7 @@ export default function NavBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [input, setInput] = useState()
   const history = useHistory()
+  const auth = useContext(AuthContext)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -102,6 +105,11 @@ export default function NavBar() {
     history.push(`/contact/search/${input}`)
   }
 
+  const handleLogout = (e) => {
+    auth.logout()
+    handleCloseUserMenu()
+  }
+
   return (
     <Box sx={{ flexGrow: 1, marginBottom: '2rem' }}>
       <AppBar position='static' sx={{ backgroundColor: '#a3a3a3', boxShadow: 'none' }}>
@@ -111,8 +119,8 @@ export default function NavBar() {
             <Typography
               variant='h6'
               noWrap
-              component='a'
-              href='/'
+              component={Link}
+              to='/'
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
@@ -216,11 +224,9 @@ export default function NavBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign='center'>{setting}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem key='Logout' onClick={handleLogout}>
+                  <Typography textAlign='center'>Logout</Typography>
+                </MenuItem>
               </Menu>
             </Box>
           </Toolbar>

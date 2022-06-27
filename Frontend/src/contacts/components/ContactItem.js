@@ -3,17 +3,16 @@ import { useHistory, useRouteMatch, Link } from 'react-router-dom'
 
 import { Card, CardHeader, CardContent, Button, Typography } from '@mui/material'
 
-// import Modal from '../../shared/components/UIElements/Modal';
-// import Map from '../../shared/components/UIElements/Map';
-// import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
 import { useHttpClient } from '../../shared/hooks/http-hook'
-// import { AuthContext } from '../../shared/context/auth-context'
+import { AuthContext } from '../../shared/context/auth-context'
 import './ContactItem.css'
 
 const ContactItem = () => {
   const [contact, setContact] = useState()
   const { isLoading, error, sendRequest, clearError } = useHttpClient()
+
+  const auth = useContext(AuthContext)
 
   const id = useRouteMatch().params.id
 
@@ -22,9 +21,9 @@ const ContactItem = () => {
   useEffect(() => {
     const fetchContact = async () => {
       try {
-        const responseData = await sendRequest(`http://localhost:5000/contact/${id}`)
-        console.log(['res?', responseData])
-        // console.log(responseData.contact)
+        const responseData = await sendRequest(`http://localhost:5000/contact/${id}`, 'GET', null, {
+          Authorization: 'Bearer ' + auth.token,
+        })
         setContact(responseData.contact)
       } catch (err) {
         console.log(err)
@@ -43,7 +42,9 @@ const ContactItem = () => {
 
   const deleteContact = async () => {
     try {
-      await sendRequest(`http://localhost:5000/contact/${id}/delete`, 'DELETE')
+      await sendRequest(`http://localhost:5000/contact/${id}/delete`, 'DELETE', null, {
+        Authorization: 'Bearer ' + auth.token,
+      })
     } catch (err) {}
   }
 
@@ -89,15 +90,15 @@ const ContactItem = () => {
           </div> */}
           {!isLoading && contact && (
             <>
-              <Typography gutterBottom variant='h2' component='div'>
+              <Typography gutterBottom variant='h2' component='div' align='center'>
                 {contact.name}
               </Typography>
-              <Typography variant='body1' component='div'>
+              <Typography variant='body1' component='div' align='center'>
                 <p>Name: {contact.name}</p>
                 <p>Number: {contact.number}</p>
                 <p>Email: {contact.email}</p>
               </Typography>
-              <div>
+              <div align='center'>
                 {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
                 <Button variant='text' component={Link} to='/'>
                   BACK

@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useHistory, useLocation, Link } from 'react-router-dom'
 
-import { Box, Card, Container, Button, Typography, TextField, Grid } from '@mui/material'
+import { Card, Button, Typography, TextField, Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { useHttpClient } from '../../shared/hooks/http-hook'
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
+import { AuthContext } from '../../shared/context/auth-context'
 
 const ContactForm = () => {
   const [contact, setContact] = useState()
   const { isLoading, error, sendRequest, clearError } = useHttpClient()
+
+  const auth = useContext(AuthContext)
 
   let id
   let location = useLocation()
@@ -36,7 +39,9 @@ const ContactForm = () => {
     const fetchContact = async () => {
       if (id) {
         try {
-          const responseData = await sendRequest(`http://localhost:5000/contact/${id}`)
+          const responseData = await sendRequest(`http://localhost:5000/contact/${id}`, 'GET', null, {
+            Authorization: 'Bearer ' + auth.token,
+          })
           setContact(responseData.contact)
           setValue('name', responseData.contact.name)
           setValue('number', responseData.contact.number)
@@ -58,12 +63,15 @@ const ContactForm = () => {
           name: data.name,
           number: data.number,
           email: data.email,
-          creator: '62b84b79f754efcabdf3327d',
+          creator: '62ba24df090857c77941d687',
         }),
-        { 'Content-Type': 'application/json' }
+        {
+          Authorization: 'Bearer ' + auth.token,
+        }
       )
       history.push('/')
     } catch (err) {
+      console.log(err)
       alert('An error occured, please try again')
     }
   }
@@ -78,7 +86,9 @@ const ContactForm = () => {
           number: data.number,
           email: data.email,
         }),
-        { 'Content-Type': 'application/json' }
+        {
+          Authorization: 'Bearer ' + auth.token,
+        }
       )
       history.push('/')
     } catch (err) {
@@ -90,23 +100,22 @@ const ContactForm = () => {
     <Grid item container spacing={4} direction='column' align='center' justifyContent='center' maxWidth='50%' margin='auto'>
       {isLoading && <LoadingSpinner asOverlay />}
       {((!isLoading && contact) || !id) && (
-        <Card>
-          <Grid item mt={2} mb={2} align='center'>
+        <Card sx={{ borderRadius: '10px' }}>
+          <Grid item mt={2} mb={2}>
             <Typography variant='h5' component='div'>
               {id ? 'Edit Contact' : 'New Contact'}
             </Typography>
           </Grid>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid mb={2} xs={6} flexGrow={2} align='center'>
+            <Grid mb={2} xs={9} flexGrow={2} align='center'>
               <TextField fullWidth label='Name' {...register('name', { required: 'Required' })} error={!!errors?.name} helperText={errors?.name ? errors.name.message : null} />
             </Grid>
-            <Grid mb={2} xs={6} align='center'>
+            <Grid mb={2} xs={9} align='center'>
               <TextField fullWidth label='Number' {...register('number')} />
             </Grid>
-            <Grid mb={2} xs={6} align='center'>
+            <Grid mb={2} xs={9} align='center'>
               <TextField
                 fullWidth
-                flexGrow={2}
                 label='Email'
                 {...register('email', {
                   pattern: {
@@ -119,10 +128,10 @@ const ContactForm = () => {
               />
             </Grid>
             <Grid item mb={2} align='center'>
-              <Button type='submit' variant='contained' color='primary' sx={{ marginRight: '5px' }}>
+              <Button type='submit' variant='text' color='primary' sx={{ marginRight: '5px' }}>
                 {id ? 'Update Contact' : 'Add Contact'}
               </Button>
-              <Button variant='contained' color='error' component={Link} to='/'>
+              <Button variant='text' color='error' component={Link} to='/'>
                 Cancel
               </Button>
             </Grid>
