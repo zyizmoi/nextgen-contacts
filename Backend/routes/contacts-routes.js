@@ -9,8 +9,10 @@ router.get('/', contactsController.searchContact)
 
 router.post('/create', [check('name').not().isEmpty(), check('number').isNumeric().isLength({ min: 8, max: 8 })], contactsController.createContact)
 
-router.put('/:id', contactsController.updateContact)
+router.get('/:id', contactsController.findContactById)
 
-router.delete('/:id', contactsController.deleteContact)
+router.put('/:id/update', contactsController.updateContact)
+
+router.delete('/:id/delete', contactsController.deleteContact)
 
 module.exports = router

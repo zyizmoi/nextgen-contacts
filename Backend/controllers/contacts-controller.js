@@ -14,12 +14,29 @@ const allContacts = async (req, res, next) => {
     return next(error)
   }
 
-  console.log('GET request for contacts')
-
   if (!allContactList || allContactList.length === 0) {
     return res.json({})
   }
   res.json({ contacts: allContactList.map((contact) => contact.toObject({ getters: true })) })
+}
+
+const findContactById = async (req, res, next) => {
+  const id = req.params.id
+
+  let contact
+  try {
+    contact = await Contact.findById(id)
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not update contact', 500)
+    return next(error)
+  }
+
+  if (!contact) {
+    const error = new HttpError('Could not find contact for given ID', 404)
+    return next(error)
+  }
+
+  res.json({ contact: contact.toObject({ getters: true }) })
 }
 
 const searchContact = async (req, res, next) => {
@@ -41,9 +58,9 @@ const searchContact = async (req, res, next) => {
 
   if (!contacts || contacts.length === 0) {
     return next(new HttpError('Could not find a matching contact', 404))
+    // return res.json({ contacts: {} })
   }
 
-  console.log('GET request for contacts')
   res.json({ contacts: contacts.map((contact) => contact.toObject({ getters: true })) })
 }
 
@@ -55,10 +72,9 @@ const createContact = async (req, res, next) => {
 
   const { name, number, email, creator } = req.body
   const strNumber = number.toString()
-  console.log(typeof strNumber)
   const newContact = new Contact({
     name,
-    strNumber,
+    number: strNumber,
     email,
     creator,
   })
@@ -157,3 +173,4 @@ exports.createContact = createContact
 exports.updateContact = updateContact
 exports.deleteContact = deleteContact
 exports.allContacts = allContacts
+exports.findContactById = findContactById

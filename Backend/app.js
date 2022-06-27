@@ -6,16 +6,26 @@ const contactsRoutes = require('./routes/contacts-routes')
 const usersRoutes = require('./routes/users-routes')
 const baseRoute = require('./routes/base-route')
 const httpError = require('./models/http-error')
+const checkAuth = require('./middleware/check-auth')
 
 const app = express()
 
 app.use(bodyParser.json())
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+  next()
+})
+
+app.use('/users', usersRoutes)
+
+app.use(checkAuth)
+
 app.use('/', baseRoute)
 
 app.use('/contact', contactsRoutes)
-
-app.use('/users', usersRoutes)
 
 app.use((req, res, next) => {
   const error = new httpError('Could not find the route', 404)
