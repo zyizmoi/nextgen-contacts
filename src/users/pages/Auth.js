@@ -39,7 +39,7 @@ const Auth = () => {
             'Content-Type': 'application/json',
           }
         )
-        auth.login(responseData.userId, responseData.token)
+        auth.login(responseData.userId, responseData.token, responseData.name)
       } catch (err) {}
     } else {
       try {
@@ -56,7 +56,7 @@ const Auth = () => {
           }
         )
 
-        auth.login(responseData.userId, responseData.token)
+        auth.login(responseData.userId, responseData.token, responseData.name)
       } catch (err) {}
     }
   }
@@ -66,7 +66,7 @@ const Auth = () => {
       {isLoading && <LoadingSpinner asOverlay />}
       <Card sx={{ borderRadius: '10px' }}>
         <Grid item mt={2} mb={2}>
-          <Typography variant='h5' component='div'>
+          <Typography variant='h5' fontWeight='bold' component='div'>
             {isLoginMode ? 'Login' : 'Sign Up'}
           </Typography>
         </Grid>

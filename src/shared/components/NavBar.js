@@ -56,7 +56,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-export default function NavBar() {
+export default function NavBar(props) {
+  const { name } = props
+
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [input, setInput] = useState()
@@ -201,9 +203,9 @@ export default function NavBar() {
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title='Open settings'>
+              <Tooltip title={name}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt='ZY' src='/static/images/avatar/2.jpg' />
+                  <Avatar>{name && name[0]}</Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
