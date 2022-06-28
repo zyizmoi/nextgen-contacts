@@ -23,7 +23,7 @@ const PopulatedContacts = (props) => {
     const fetchContacts = async () => {
       if (!query || query.length === 0) {
         try {
-          const responseData = await sendRequest(`http://localhost:5000/`, 'GET', null, {
+          const responseData = await sendRequest(process.env.REACT_APP_BACKEND_URL, 'GET', null, {
             Authorization: 'Bearer ' + auth.token,
           })
           console.log(responseData)
@@ -31,7 +31,7 @@ const PopulatedContacts = (props) => {
         } catch (err) {}
       } else {
         try {
-          const responseData = await sendRequest(`http://localhost:5000/contact/?search=${query}`, 'GET', null, {
+          const responseData = await sendRequest(process.env.REACT_APP_BACKEND_URL + `/contact/?search=${query}`, 'GET', null, {
             Authorization: 'Bearer ' + auth.token,
           })
           console.log(responseData)

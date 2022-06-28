@@ -29,7 +29,7 @@ const Auth = () => {
     if (isLoginMode) {
       try {
         const responseData = await sendRequest(
-          'http://localhost:5000/users/login',
+          process.env.REACT_APP_BACKEND_URL + '/users/login',
           'POST',
           JSON.stringify({
             email: data.email,
@@ -39,13 +39,12 @@ const Auth = () => {
             'Content-Type': 'application/json',
           }
         )
-        console.log([responseData.userId, responseData.token])
         auth.login(responseData.userId, responseData.token)
       } catch (err) {}
     } else {
       try {
         const responseData = await sendRequest(
-          'http://localhost:5000/users/signup',
+          process.env.REACT_APP_BACKEND_URL + '/users/signup',
           'POST',
           JSON.stringify({
             name: data.name,
@@ -73,12 +72,12 @@ const Auth = () => {
         </Grid>
         <form onSubmit={handleSubmit(onSubmit)}>
           {!isLoginMode && (
-            <Grid mb={2} xs={9} flexGrow={2} align='center'>
+            <Grid item mb={2} xs={9} flexGrow={2} align='center'>
               <TextField fullWidth label='Name' {...register('name', { required: 'Required' })} error={!!errors?.name} helperText={errors?.name ? errors.name.message : null} />
             </Grid>
           )}
 
-          <Grid mb={2} xs={9} align='center'>
+          <Grid item mb={2} xs={9} align='center'>
             <TextField
               fullWidth
               label='Email'
@@ -92,7 +91,7 @@ const Auth = () => {
               helperText={errors?.email ? errors.email.message : null}
             />
           </Grid>
-          <Grid mb={2} xs={9} align='center'>
+          <Grid item mb={2} xs={9} align='center'>
             <TextField fullWidth type='password' label='Password' {...register('password')} />
           </Grid>
           <Grid item mb={2} align='center'>
