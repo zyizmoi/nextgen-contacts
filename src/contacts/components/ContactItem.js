@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useHistory, useRouteMatch, Link } from 'react-router-dom'
 
-import { Card, CardHeader, CardContent, Button, Typography } from '@mui/material'
+import { Card, CardContent, Button, Typography, Container, createTheme, Avatar } from '@mui/material'
+import { ThemeProvider } from '@mui/system'
 
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
 import { useHttpClient } from '../../shared/hooks/http-hook'
@@ -48,40 +49,58 @@ const ContactItem = () => {
     } catch (err) {}
   }
 
+  const theme = createTheme({
+    breakpoints: {
+      values: {
+        xs: 370,
+        md: 800,
+        lg: 1200,
+      },
+    },
+  })
+
   console.log(contact)
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', minWidth: '40%' }}>
-      <Card sx={{ minWidth: '40%', margin: '5% 0%' }}>
-        <CardContent>
-          {isLoading && <LoadingSpinner asOverlay />}
-
-          {!isLoading && contact && (
-            <>
-              <Typography gutterBottom variant='h2' component='div' align='center'>
-                {contact.name}
-              </Typography>
-              <Typography variant='body1' component='div' align='center'>
-                <p>Name: {contact.name}</p>
-                <p>Number: {contact.number}</p>
-                <p>Email: {contact.email}</p>
-              </Typography>
-              <div align='center'>
-                {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
-                <Button variant='text' component={Link} to='/'>
-                  BACK
-                </Button>
-                <Button variant='text' component={Link} to={{ pathname: `/contact/update/${contact.id}`, state: { id: id } }}>
-                  EDIT
-                </Button>
-                <Button variant='text' onClick={onDelete}>
-                  DELETE
-                </Button>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      {isLoading && <LoadingSpinner asOverlay />}
+      {!isLoading && contact && (
+        <ThemeProvider theme={theme}>
+          <Container sx={{ minWidth: '300px' }}>
+            <Card sx={{ maxWidth: { md: '50%' }, margin: 'auto', borderRadius: '10px' }}>
+              <Avatar alt='ZY' src='/static/images/avatar/2.jpg' />
+              <CardContent>
+                <Typography gutterBottom variant='h3' fontWeight='bold' component='div' align='center'>
+                  {contact.name}
+                </Typography>
+                <Container align='center'>
+                  {/* <Typography variant='h6' component='div' align='center'>
+                      Name: {contact.name}
+                    </Typography> */}
+                  <Typography variant='h6' component='div' align='center'>
+                    Number: {contact.number}
+                  </Typography>
+                  <Typography variant='h6' component='div' align='center'>
+                    Email: {contact.email}
+                  </Typography>
+                </Container>
+                <Container align='center' sx={{ marginTop: '20px' }}>
+                  {/* {auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>} */}
+                  <Button variant='text' component={Link} to='/'>
+                    BACK
+                  </Button>
+                  <Button variant='text' component={Link} to={{ pathname: `/contact/update/${contact.id}`, state: { id: id } }}>
+                    EDIT
+                  </Button>
+                  <Button variant='text' onClick={onDelete}>
+                    DELETE
+                  </Button>
+                </Container>
+              </CardContent>
+            </Card>
+          </Container>
+        </ThemeProvider>
+      )}
+    </>
   )
 }
 

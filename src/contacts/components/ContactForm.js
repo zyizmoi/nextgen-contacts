@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useHistory, useLocation, Link } from 'react-router-dom'
 
-import { Card, Button, Typography, TextField, Grid } from '@mui/material'
+import { Card, Button, Typography, TextField, Grid, createTheme } from '@mui/material'
+import { ThemeProvider } from '@mui/system'
+
 import { useForm } from 'react-hook-form'
 import { useHttpClient } from '../../shared/hooks/http-hook'
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
@@ -22,7 +24,7 @@ const ContactForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, touchedFields },
+    formState: { errors },
     setValue,
   } = useForm()
 
@@ -99,13 +101,17 @@ const ContactForm = () => {
     }
   }
 
+  const handleOnClickBack = () => {
+    history.goBack()
+  }
+
   return (
-    <Grid item container spacing={4} direction='column' align='center' justifyContent='center' maxWidth='50%' margin='auto'>
+    <Grid item container spacing={4} direction='column' align='center' justifyContent='center'>
       {isLoading && <LoadingSpinner asOverlay />}
       {((!isLoading && contact) || !id) && (
-        <Card sx={{ borderRadius: '10px' }}>
+        <Card sx={{ borderRadius: '10px', margin: 'auto', mt: '5%', minWidth: { xl: '50%', md: '70%', xs: '90%' }, maxWidth: '50%' }}>
           <Grid item mt={2} mb={2}>
-            <Typography variant='h5' component='div'>
+            <Typography variant='h5' fontWeight='bold' component='div'>
               {id ? 'Edit Contact' : 'New Contact'}
             </Typography>
           </Grid>
@@ -131,10 +137,10 @@ const ContactForm = () => {
               />
             </Grid>
             <Grid item mb={2} align='center'>
-              <Button type='submit' variant='text' color='primary' sx={{ marginRight: '5px' }}>
+              <Button type='submit' variant='text' color='primary' sx={{ marginRight: '5px' }} component={Link} to={`/contact/find/${id}`}>
                 {id ? 'Update Contact' : 'Add Contact'}
               </Button>
-              <Button variant='text' color='error' component={Link} to='/'>
+              <Button variant='text' color='error' component={Link} onClick={handleOnClickBack}>
                 Cancel
               </Button>
             </Grid>

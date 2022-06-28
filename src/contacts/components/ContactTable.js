@@ -51,14 +51,14 @@ const ContactTable = (props) => {
     return { id: contact.id, name: contact.name, number: contact.number, email: contact.email }
   })
   const columns = [
-    { field: 'name', headerName: 'Name', minWidth: 150, flex: 1 },
-    { field: 'number', headerName: 'Number', minWidth: 150, flex: 1 },
-    { field: 'email', headerName: 'Email', minWidth: 150, flex: 2 },
+    { field: 'name', headerName: 'Name', minWidth: 200, flex: 1, cellClassName: 'name-column', headerClassName: 'column-header' },
+    { field: 'number', headerName: 'Number', minWidth: 200, flex: 1, headerClassName: 'column-header' },
+    { field: 'email', headerName: 'Email', minWidth: 200, flex: 1, headerClassName: 'column-header' },
   ]
 
   return (
     <div className='contact-table'>
-      <DataGrid rows={rows} columns={columns} onRowClick={handleOnRowClick} AutoGenerateColumns='False' />
+      <DataGrid rows={rows} columns={columns} onRowClick={handleOnRowClick} AutoGenerateColumns='False' density='comfortable' autoPageSize={true} rowsPerPageOptions={[10, 20, 50]} />
     </div>
   )
 

@@ -3,9 +3,17 @@
 .contact-table {
   border-radius: 1%;
   min-width: 500;
-  width: 75%;
+  width: 95%;
   height: 70vh;
-  margin: 20px auto;
-  padding: 15px 10px;
+  margin: 20px 5px;
+  padding: 10px 10px;
   background: #fff;
+}
+
+.name-column {
+  font-weight: bold;
+}
+
+.column-header {
+  font-size: large;
 }
