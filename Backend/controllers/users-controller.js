@@ -51,7 +51,7 @@ const signup = async (req, res, next) => {
 
   let token
   try {
-    token = jwt.sign({ userId: newUser.id, email: newUser.email }, 'ultrasafeprivatekey', { expiresIn: '1h' })
+    token = jwt.sign({ userId: newUser.id, email: newUser.email }, process.env.JWT_KEY, { expiresIn: '1h' })
   } catch (err) {
     const error = new HttpError('Failed to create account, please try again', 500)
     return next(error)
@@ -93,7 +93,7 @@ const login = async (req, res, next) => {
 
   let token
   try {
-    token = jwt.sign({ userId: existingUser.id, email: existingUser.email }, 'ultrasafeprivatekey', { expiresIn: '1h' })
+    token = jwt.sign({ userId: existingUser.id, email: existingUser.email }, process.env.JWT_KEY, { expiresIn: '1h' })
   } catch (err) {
     const error = new HttpError('Logging in failed, please try again', 500)
     return next(error)

@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 const contactsRoutes = require('./routes/contacts-routes')
 const usersRoutes = require('./routes/users-routes')
@@ -11,6 +12,7 @@ const checkAuth = require('./middleware/check-auth')
 const app = express()
 
 app.use(bodyParser.json())
+// app.use(cors((origin = false)))
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -41,7 +43,7 @@ app.use((error, req, res, next) => {
 })
 
 mongoose
-  .connect('mongodb+srv://angzhenyi:mimMYrhvKoh8p3Ii@cluster0.vitdv2w.mongodb.net/?retryWrites=true&w=majority')
+  .connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.vitdv2w.mongodb.net/?retryWrites=true&w=majority`)
   .then(() => {
     app.listen(5000)
   })

@@ -71,7 +71,7 @@ const createContact = async (req, res, next) => {
   }
 
   const { name, number, email, creator } = req.body
-  const strNumber = number.toString()
+  const strNumber = number ? number.toString() : number
   const newContact = new Contact({
     name,
     number: strNumber,
@@ -115,6 +115,8 @@ const updateContact = async (req, res, next) => {
   const { name, number, email } = req.body
   const id = req.params.id
 
+  const strNumber = number ? number.toString() : number
+
   let updatedContact
   try {
     updatedContact = await Contact.findById(id)
@@ -124,7 +126,7 @@ const updateContact = async (req, res, next) => {
   }
 
   updatedContact.name = name ? name : updatedContact.name
-  updatedContact.number = number ? number : updatedContact.number
+  updatedContact.number = strNumber ? strNumber : updatedContact.number
   updatedContact.email = email ? email : updatedContact.email
 
   try {
