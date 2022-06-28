@@ -120,7 +120,7 @@ const ContactForm = () => {
               <TextField fullWidth label='Name' {...register('name', { required: 'Required' })} error={!!errors?.name} helperText={errors?.name ? errors.name.message : null} />
             </Grid>
             <Grid item mb={2} xs={9} align='center'>
-              <TextField fullWidth label='Number' {...register('number')} />
+              <TextField fullWidth label='Number' {...register('number', { required: 'Required', minLength: 8 })} error={!!errors?.number} helperText={errors?.number ? 'At least 8 digits' : null} />
             </Grid>
             <Grid item mb={2} xs={9} align='center'>
               <TextField
@@ -137,7 +137,7 @@ const ContactForm = () => {
               />
             </Grid>
             <Grid item mb={2} align='center'>
-              <Button type='submit' variant='text' color='primary' sx={{ marginRight: '5px' }} component={Link} to={`/contact/find/${id}`}>
+              <Button type='submit' variant='text' color='primary' sx={{ marginRight: '5px' }}>
                 {id ? 'Update Contact' : 'Add Contact'}
               </Button>
               <Button variant='text' color='error' component={Link} onClick={handleOnClickBack}>

@@ -88,17 +88,21 @@ export default function NavBar() {
     handleCloseNavMenu()
   }
 
-  const onChange = (e) => {
+  const onChange = async (e) => {
     setInput(e.target.value)
+    if (!input || input.length === 0) {
+      return history.push('/')
+    }
+    history.push(`/contact/search/${input}`)
   }
 
   const onSubmit = (e) => {
     e.preventDefault()
     // alert(input)
-    if (!input || input.length === 0) {
-      return history.push('/')
-    }
-    history.push(`/contact/search/${input}`)
+    // if (!input || input.length === 0) {
+    //   return history.push('/')
+    // }
+    // history.push(`/contact/search/${input}`)
   }
 
   const handleLogout = (e) => {
