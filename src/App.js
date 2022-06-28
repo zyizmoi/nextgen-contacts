@@ -14,28 +14,30 @@ import './App.css'
 function App() {
   const [token, setToken] = useState(false)
   const [userId, setUserId] = useState(false)
+  const [name, setName] = useState(false)
 
   const [loggingin, setLoggingin] = useState(true)
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'))
     if (storedData && storedData.token) {
-      login(storedData.userId, storedData.token)
+      login(storedData.userId, storedData.token, storedData.name)
       setLoggingin(false)
     }
   }, [])
 
-  const login = useCallback((uid, token) => {
+  const login = useCallback((uid, token, name) => {
     setToken(token)
-    localStorage.setItem('userData', JSON.stringify({ userId: uid, token: token }))
-    console.log('set')
     setUserId(uid)
+    setName(name)
+    localStorage.setItem('userData', JSON.stringify({ userId: uid, token: token, name: name }))
     setLoggingin(false)
   }, [])
 
   const logout = useCallback(() => {
     setToken(null)
     setUserId(null)
+    setName(null)
     localStorage.removeItem('userData')
   }, [])
 
@@ -46,7 +48,7 @@ function App() {
       <LoadingSpinner asOverlay />
     ) : (
       <Router>
-        <NavBar path='/' />
+        <NavBar path='/' name={name} />
         <Route exact path='/'>
           <ContactsPage header='All Contacts' />
         </Route>
