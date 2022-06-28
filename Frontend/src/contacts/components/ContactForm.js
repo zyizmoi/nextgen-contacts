@@ -39,7 +39,7 @@ const ContactForm = () => {
     const fetchContact = async () => {
       if (id) {
         try {
-          const responseData = await sendRequest(`http://localhost:5000/contact/${id}`, 'GET', null, {
+          const responseData = await sendRequest(process.env.REACT_APP_BACKEND_URL + `/contact/${id}`, 'GET', null, {
             Authorization: 'Bearer ' + auth.token,
           })
           setContact(responseData.contact)
@@ -57,7 +57,7 @@ const ContactForm = () => {
   const addNewContact = async (data) => {
     try {
       await sendRequest(
-        'http://localhost:5000/contact/create',
+        process.env.REACT_APP_BACKEND_URL + '/contact/create',
         'POST',
         JSON.stringify({
           name: data.name,
@@ -67,6 +67,7 @@ const ContactForm = () => {
         }),
         {
           Authorization: 'Bearer ' + auth.token,
+          'Content-Type': 'application/json',
         }
       )
       history.push('/')
@@ -79,15 +80,17 @@ const ContactForm = () => {
   const updateContact = async (data) => {
     try {
       await sendRequest(
-        `http://localhost:5000/contact/${id}/update`,
+        process.env.REACT_APP_BACKEND_URL + `/contact/${id}/update`,
         'PUT',
         JSON.stringify({
           name: data.name,
           number: data.number,
           email: data.email,
+          creator: '62ba24df090857c77941d687',
         }),
         {
           Authorization: 'Bearer ' + auth.token,
+          'Content-Type': 'application/json',
         }
       )
       history.push('/')
@@ -107,13 +110,13 @@ const ContactForm = () => {
             </Typography>
           </Grid>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid mb={2} xs={9} flexGrow={2} align='center'>
+            <Grid item mb={2} xs={9} flexGrow={2} align='center'>
               <TextField fullWidth label='Name' {...register('name', { required: 'Required' })} error={!!errors?.name} helperText={errors?.name ? errors.name.message : null} />
             </Grid>
-            <Grid mb={2} xs={9} align='center'>
+            <Grid item mb={2} xs={9} align='center'>
               <TextField fullWidth label='Number' {...register('number')} />
             </Grid>
-            <Grid mb={2} xs={9} align='center'>
+            <Grid item mb={2} xs={9} align='center'>
               <TextField
                 fullWidth
                 label='Email'

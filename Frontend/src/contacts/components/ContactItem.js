@@ -21,7 +21,7 @@ const ContactItem = () => {
   useEffect(() => {
     const fetchContact = async () => {
       try {
-        const responseData = await sendRequest(`http://localhost:5000/contact/${id}`, 'GET', null, {
+        const responseData = await sendRequest(process.env.REACT_APP_BACKEND_URL + `/contact/${id}`, 'GET', null, {
           Authorization: 'Bearer ' + auth.token,
         })
         setContact(responseData.contact)
@@ -42,7 +42,7 @@ const ContactItem = () => {
 
   const deleteContact = async () => {
     try {
-      await sendRequest(`http://localhost:5000/contact/${id}/delete`, 'DELETE', null, {
+      await sendRequest(process.env.REACT_APP_BACKEND_URL + `/contact/${id}/delete`, 'DELETE', null, {
         Authorization: 'Bearer ' + auth.token,
       })
     } catch (err) {}
@@ -51,43 +51,10 @@ const ContactItem = () => {
   console.log(contact)
   return (
     <div style={{ display: 'flex', justifyContent: 'center', minWidth: '40%' }}>
-      {/* <ErrorModal error={error} onClear={clearError} /> */}
-      {/* <Modal
-        show={showMap}
-        onCancel={closeMapHandler}
-        header={props.address}
-        contentClass='place-item__modal-content'
-        footerClass='place-item__modal-actions'
-        footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
-      >
-        <div className='map-container'>
-          <Map center={props.coordinates} zoom={16} />
-        </div>
-      </Modal>
-      <Modal
-        show={showConfirmModal}
-        onCancel={cancelDeleteHandler}
-        header='Are you sure?'
-        footerClass='place-item__modal-actions'
-        footer={
-          <>
-            <Button inverse onClick={cancelDeleteHandler}>
-              CANCEL
-            </Button>
-            <Button danger onClick={confirmDeleteHandler}>
-              DELETE
-            </Button>
-          </>
-        }
-      >
-        <p>Do you want to proceed and delete this place? Please note that it can't be undone thereafter.</p>
-      </Modal> */}
       <Card sx={{ minWidth: '40%', margin: '5% 0%' }}>
         <CardContent>
           {isLoading && <LoadingSpinner asOverlay />}
-          {/* <div className='place-item__image'>
-            <img src={contact.image} alt={contact.title} />
-          </div> */}
+
           {!isLoading && contact && (
             <>
               <Typography gutterBottom variant='h2' component='div' align='center'>
@@ -112,8 +79,6 @@ const ContactItem = () => {
               </div>
             </>
           )}
-
-          {/* {auth.userId === props.creatorId && <Button danger>DELETE</Button>} */}
         </CardContent>
       </Card>
     </div>
