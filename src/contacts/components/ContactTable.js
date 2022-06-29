@@ -40,9 +40,9 @@ const ContactTable = (props) => {
   if (props.items.length === 0) {
     return (
       <div className='place-list center'>
-        <Card>
-          <h2>No contacts found.</h2>
-        </Card>
+        <Typography gutterBottom variant='h4' component='div' textAlign='center' sx={{ marginBottom: '60px' }}>
+          No contacts found.
+        </Typography>
       </div>
     )
   }
